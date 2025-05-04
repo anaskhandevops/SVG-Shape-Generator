@@ -3,125 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Shape Generator</title>
+    <title>SVG Shape Studio!</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
+            /* Apply the requested background color */
+            background-color: #FFFCEB;
         }
-        /* Style range sliders */
+
+        /* Main container styling - Adopted */
+        .main-container {
+            background-color: #ffffff;
+            border: 3px solid #2D3748; /* Dark border */
+            border-radius: 16px; /* More pronounced rounding */
+            box-shadow: 8px 8px 0px #2D3748; /* Stronger offset shadow */
+            width: 100%;
+            max-width: 64rem; /* max-w-5xl */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Section Container Styling (Controls, Preview/Code) */
+        .section-container {
+             background-color: #FFF7ED; /* orange-50 */
+             border: 2px solid #FDBA74; /* orange-300 */
+             border-radius: 12px; /* Match inputs */
+             box-shadow: 4px 4px 0px #FDBA74; /* Offset shadow using border color */
+        }
+         .section-container-alt { /* For Preview/Code Side */
+             background-color: #FEF3C7; /* amber-100 */
+             border: 2px solid #FDE68A; /* amber-200 */
+             border-radius: 12px; /* Match inputs */
+             box-shadow: 4px 4px 0px #FDE68A; /* Offset shadow using border color */
+         }
+
+        /* Playful Select Styling - Adopted */
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #ffffff;
+            border: 3px solid #4A5568;
+            border-radius: 12px;
+            color: #2D3748;
+            font-weight: 500;
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+            box-shadow: 4px 4px 0px #4A5568;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234A5568' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+            padding-right: 3rem;
+        }
+        select:focus {
+            outline: none;
+            border-color: #FF7F50;
+            box-shadow: 4px 4px 0px #FF7F50, 0 0 0 3px #FFFCEB;
+            transform: translateY(-1px) translateX(-1px);
+        }
+
+        /* Playful Range Slider Styling - Adopted */
         input[type="range"] {
+            flex-grow: 1; /* Ensure slider takes available space */
             cursor: pointer;
-            accent-color: #4f46e5; /* Indigo */
-            height: 8px;
-            background-color: #e5e7eb; /* gray-200 */
-            border-radius: 9999px; /* rounded-full */
+            accent-color: #FF7F50; /* Vibrant Orange */
+            height: 10px; /* Slightly thicker */
+            border-radius: 5px;
+            background-color: #FED7AA; /* Tailwind orange-200 */
+            transition: background-color 0.15s ease-in-out;
             appearance: none;
             -webkit-appearance: none;
+             border: 2px solid #FDBA74; /* orange-300 border */
+             box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
         }
         input[type="range"]::-webkit-slider-thumb {
-             -webkit-appearance: none;
              appearance: none;
-             width: 16px;
-             height: 16px;
-             background: #4f46e5; /* Indigo */
+             -webkit-appearance: none;
+             width: 22px; /* Larger thumb */
+             height: 22px;
+             background: #FF7F50; /* Coral */
              border-radius: 50%;
-             cursor: pointer;
+             border: 3px solid #FFFCEB; /* Background color border */
+             box-shadow: 2px 2px 0px #E9754A, 0px 1px 3px rgba(0,0,0,0.3); /* Offset shadow + subtle shadow */
+             cursor: grab;
         }
-        input[type="range"]::-moz-range-thumb {
-             width: 16px;
-             height: 16px;
-             background: #4f46e5; /* Indigo */
+         input[type="range"]::-moz-range-thumb {
+             width: 18px; /* Adjust for consistency */
+             height: 18px;
+             background: #FF7F50;
              border-radius: 50%;
-             cursor: pointer;
-             border: none;
+             border: 3px solid #FFFCEB;
+             box-shadow: 2px 2px 0px #E9754A, 0px 1px 3px rgba(0,0,0,0.3);
+             cursor: grab;
+         }
+        input[type="range"]:hover {
+             background-color: #FDBA74; /* Tailwind orange-300 */
         }
-        /* Style color inputs */
+         input[type="range"]:active::-webkit-slider-thumb { cursor: grabbing; }
+         input[type="range"]:active::-moz-range-thumb { cursor: grabbing; }
+
+        /* Playful Color Input Styling */
         input[type="color"] {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            width: 40px;
-            height: 40px;
+            width: 44px; /* Slightly larger */
+            height: 44px;
             padding: 0;
-            border: 1px solid #d1d5db; /* gray-300 */
-            border-radius: 0.375rem; /* rounded-md */
+            border: 3px solid #4A5568; /* Dark border */
+            border-radius: 10px; /* Rounded */
             cursor: pointer;
             background-color: transparent;
+            box-shadow: 3px 3px 0px #4A5568; /* Offset shadow */
+            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
         }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 0.25rem; }
-        input[type="color"]::-moz-color-swatch { border: none; border-radius: 0.25rem; }
+        input[type="color"]:hover {
+             transform: translateY(-1px);
+             box-shadow: 4px 4px 0px #4A5568;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 3px; } /* Add padding */
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; } /* Inner swatch */
+        input[type="color"]::-moz-color-swatch { border: none; border-radius: 4px; padding: 3px;}
 
         /* SVG Preview Area */
         #svgPreview {
-            min-height: 300px; /* Increased height */
-            border: 1px dashed #d1d5db; /* gray-300 */
+            min-height: 350px; /* Increased height */
+            border: 3px dashed #FDE68A; /* amber-200 dashed border */
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f9fafb; /* gray-50 */
+            background-color: #FFFBEB; /* amber-50 */
             overflow: hidden;
-            position: relative; /* For centering guides */
+            position: relative;
+            border-radius: 10px; /* Rounded */
         }
         #svgPreview svg {
             max-width: 100%;
             max-height: 100%;
             display: block;
+            /* Add a subtle animation */
+            transition: transform 0.2s ease-out;
+        }
+        #svgPreview:hover svg {
+            transform: scale(1.02); /* Slight zoom on hover */
         }
 
         /* SVG Code Output */
         #svgCodeOutput {
             font-family: monospace;
-            background-color: #f3f4f6; /* gray-100 */
-            border: 1px solid #d1d5db; /* gray-300 */
-            border-radius: 0.375rem; /* rounded-md */
-            padding: 0.75rem 1rem;
+            background-color: #FEF3C7; /* amber-100 */
+            border: 2px solid #FDE68A; /* amber-200 */
+            border-radius: 10px;
+            padding: 1rem 1.25rem; /* Increased padding */
             word-wrap: break-word;
             white-space: pre-wrap;
             min-height: 150px;
             max-height: 300px;
             overflow-y: auto;
+            color: #9A3412; /* amber-800 */
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.05);
         }
-        /* Message box styling */
+
+        /* Playful Copy Button Style - Adopted */
+        #copyBtn {
+            background-color: #FF7F50; /* Coral */
+            color: white;
+            font-weight: 700; /* bold */
+            padding-top: 0.75rem; /* py-3 */
+            padding-bottom: 0.75rem;
+            padding-left: 1rem; /* px-4 */
+            padding-right: 1rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            border: 3px solid #2D3748; /* Darker border */
+            box-shadow: 5px 5px 0px #2D3748; /* Bigger shadow */
+            transition: all 0.15s ease-out;
+            width: 100%;
+            margin-top: 0.75rem; /* mt-3 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            space-x: 0.5rem; /* space-x-2 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        #copyBtn:hover {
+            background-color: #FF6347; /* Tomato */
+            box-shadow: 6px 6px 0px #2D3748;
+            transform: translateY(-2px) translateX(-1px); /* More lift */
+        }
+         #copyBtn:active {
+            background-color: #CD5C5C; /* IndianRed */
+            box-shadow: 2px 2px 0px #2D3748;
+            transform: translateY(2px) translateX(2px); /* Push down effect */
+        }
+        #copyBtn:focus {
+            outline: none;
+            box-shadow: 5px 5px 0px #2D3748, 0 0 0 3px #FFFCEB, 0 0 0 5px #FF7F50; /* Ring effect */
+        }
+
+        /* Message box styling - Adopted */
         #message-box {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000; opacity: 0; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            pointer-events: none; transform: translate(-50%, 20px);
+            padding: 12px 24px; border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15), 3px 3px 0px #4A5568;
+            z-index: 1000; opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-out;
+            pointer-events: none; font-weight: 600; border: 3px solid;
+            transform: translateX(-50%) translateY(10px); /* Start lower */
         }
-        #message-box.show { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
-        #message-box.success { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        #message-box.error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        #message-box.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        #message-box.success { background-color: #D1FAE5; color: #047857; border-color: #6EE7B7; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15), 3px 3px 0px #065F46; }
+        #message-box.error { background-color: #FFE4E6; color: #DC2626; border-color: #FDA4AF; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15), 3px 3px 0px #991B1B; }
 
-        /* Helper class for control groups */
-        .control-group { transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out; overflow: hidden; }
-        .control-group.hidden { max-height: 0; opacity: 0; margin-top: 0 !important; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
+        /* Control Group Transitions */
+         .control-group {
+             transition: opacity 0.3s ease-in-out, max-height 0.4s ease-out, transform 0.3s ease-out, margin-top 0.3s ease-out, padding-top 0.3s ease-out, border-top-width 0.3s ease-out;
+             transform: translateY(5px); max-height: 0; overflow: hidden; opacity: 0;
+             margin-top: 0 !important; padding-top: 0 !important;
+             border-top-width: 0 !important;
+         }
+         .control-group:not(.hidden) { /* Apply styles when NOT hidden */
+             opacity: 1; transform: translateY(0); max-height: 500px; /* Allow enough height */
+             margin-top: 1rem !important; /* pt-4 equivalent */
+             padding-top: 1rem !important;
+             border-top-width: 2px !important; /* Add border */
+             border-top-style: dashed;
+             border-top-color: #FDBA74; /* orange-300 */
+         }
+         .control-group.hidden { /* Ensure hidden styles override */
+             opacity: 0 !important; max-height: 0 !important; padding-top: 0 !important;
+             margin-top: 0 !important; overflow: hidden !important; border-top-width: 0 !important;
+             transform: translateY(5px) !important;
+         }
+
+        /* Label and Value Styling */
+        label {
+            color: #9A3412; /* amber-800 */
+            font-weight: 600; /* Semibold */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .value-display { /* Class for spans displaying slider values */
+             color: #EA580C; /* orange-600 */
+             background-color: #FFFBEB; /* amber-50 */
+             padding: 2px 6px;
+             border-radius: 4px;
+             border: 1px solid #FDE68A; /* amber-200 */
+             font-family: monospace;
+             font-size: 0.8rem;
+             min-width: 35px; /* Ensure minimum width */
+             text-align: right;
+        }
+         .color-value-display { /* Class for spans displaying color values */
+             color: #EA580C; /* orange-600 */
+             font-family: monospace;
+             font-size: 0.875rem;
+             margin-left: 0.5rem;
+             font-weight: 500;
+         }
+
+        /* Headings */
+        .section-heading {
+             color: #C2410C; /* orange-700 */
+             font-weight: 700; /* bold */
+             text-align: center;
+             border-bottom: 2px dashed #FDBA74; /* orange-300 */
+             padding-bottom: 0.5rem; /* pb-2 */
+             margin-bottom: 0.75rem; /* mb-3 */
+             font-size: 1.125rem; /* text-lg */
+        }
+         .subsection-heading {
+             color: #DD6B20; /* orange-600 */
+             font-weight: 600;
+             text-transform: uppercase;
+             letter-spacing: 0.05em;
+             font-size: 0.75rem; /* text-xs */
+             margin-bottom: 0.5rem; /* Add space below subsection headings */
+         }
 
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 p-4 md:p-8">
+<body class="p-4 md:p-8">
 
-    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-5xl mx-auto">
+    <div class="main-container p-6 sm:p-8">
 
-        <h1 class="text-2xl sm:text-3xl font-semibold text-center text-gray-800 mb-8">
-             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 inline-block mr-2 align-text-bottom">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-slate-800 mb-10 tracking-tight flex items-center justify-center gap-3">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-9 h-9 text-orange-500">
                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 2.25A14.98 14.98 0 003.47 14.37m12.12 0a14.98 14.98 0 01-8.24 2.58m8.24-2.58a14.98 14.98 0 00-2.58-8.24m-8.24 5.66a14.98 14.98 0 016.16-12.12m0 0A14.98 14.98 0 019.63 2.25m12.12 0A14.98 14.98 0 009.63 2.25M3.47 14.37a14.98 14.98 0 006.16 12.12m0 0a14.98 14.98 0 006.16-12.12m-12.12 0l-5.66-8.24m5.66 8.24l8.24 5.66" />
              </svg>
-            SVG Shape Generator
+             SVG Shape Studio!
         </h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-5 border border-gray-200 rounded-lg p-5 bg-white shadow-sm">
-                <h2 class="text-lg font-medium text-gray-700 mb-3 text-center border-b pb-2">Controls</h2>
+            <div class="section-container p-5 space-y-5">
+                <h2 class="section-heading">Controls</h2>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Shape Type:</label>
-                    <select id="shapeType" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <label for="shapeType">Shape Type:</label>
+                    <select id="shapeType">
                         <option value="polygon">Polygon</option>
                         <option value="star">Star</option>
                         <option value="circle">Circle</option>
@@ -132,162 +317,161 @@
                     </select>
                 </div>
 
-                <div id="groupPolyStar" class="control-group space-y-4 border-t pt-4">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Polygon / Star</h3>
+                <div id="groupPolyStar" class="control-group space-y-4">
+                     <h3 class="subsection-heading">Polygon / Star</h3>
                     <div class="flex items-center space-x-3">
-                        <label for="points" class="w-28 text-sm font-medium text-gray-600 shrink-0">Points / Sides:</label>
-                        <input type="range" id="points" min="3" max="20" value="5" class="flex-grow">
-                        <span id="pointsValue" class="text-sm text-gray-500 w-8 text-right font-mono">5</span>
+                        <label for="points" class="w-28 shrink-0">Points / Sides:</label>
+                        <input type="range" id="points" min="3" max="20" value="5">
+                        <span id="pointsValue" class="value-display">5</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="outerRadius" class="w-28 text-sm font-medium text-gray-600 shrink-0">Outer Radius:</label>
-                        <input type="range" id="outerRadius" min="20" max="145" value="100" class="flex-grow">
-                        <span id="outerRadiusValue" class="text-sm text-gray-500 w-8 text-right font-mono">100</span>
+                        <label for="outerRadius" class="w-28 shrink-0">Outer Radius:</label>
+                        <input type="range" id="outerRadius" min="20" max="145" value="100">
+                        <span id="outerRadiusValue" class="value-display">100</span>
                     </div>
                     <div id="innerRadiusControl" class="control-group flex items-center space-x-3">
-                        <label for="innerRadius" class="w-28 text-sm font-medium text-gray-600 shrink-0">Inner Radius:</label>
-                        <input type="range" id="innerRadius" min="5" max="140" value="50" class="flex-grow">
-                        <span id="innerRadiusValue" class="text-sm text-gray-500 w-8 text-right font-mono">50</span>
+                        <label for="innerRadius" class="w-28 shrink-0">Inner Radius:</label>
+                        <input type="range" id="innerRadius" min="5" max="140" value="50">
+                        <span id="innerRadiusValue" class="value-display">50</span>
                     </div>
                 </div>
 
-                 <div id="groupCircle" class="control-group space-y-4 border-t pt-4 hidden">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Circle</h3>
+                <div id="groupCircle" class="control-group space-y-4 hidden">
+                     <h3 class="subsection-heading">Circle</h3>
                      <div class="flex items-center space-x-3">
-                        <label for="circleR" class="w-28 text-sm font-medium text-gray-600 shrink-0">Radius (r):</label>
-                        <input type="range" id="circleR" min="10" max="145" value="80" class="flex-grow">
-                        <span id="circleRValue" class="text-sm text-gray-500 w-8 text-right font-mono">80</span>
-                    </div>
+                         <label for="circleR" class="w-28 shrink-0">Radius (r):</label>
+                         <input type="range" id="circleR" min="10" max="145" value="80">
+                         <span id="circleRValue" class="value-display">80</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="circleCX" class="w-28 text-sm font-medium text-gray-600 shrink-0">Center X (cx):</label>
-                        <input type="range" id="circleCX" min="10" max="290" value="150" class="flex-grow">
-                        <span id="circleCXValue" class="text-sm text-gray-500 w-8 text-right font-mono">150</span>
-                    </div>
+                         <label for="circleCX" class="w-28 shrink-0">Center X (cx):</label>
+                         <input type="range" id="circleCX" min="10" max="290" value="150">
+                         <span id="circleCXValue" class="value-display">150</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="circleCY" class="w-28 text-sm font-medium text-gray-600 shrink-0">Center Y (cy):</label>
-                        <input type="range" id="circleCY" min="10" max="290" value="150" class="flex-grow">
-                        <span id="circleCYValue" class="text-sm text-gray-500 w-8 text-right font-mono">150</span>
-                    </div>
-                </div>
+                         <label for="circleCY" class="w-28 shrink-0">Center Y (cy):</label>
+                         <input type="range" id="circleCY" min="10" max="290" value="150">
+                         <span id="circleCYValue" class="value-display">150</span>
+                     </div>
+                 </div>
 
-                 <div id="groupEllipse" class="control-group space-y-4 border-t pt-4 hidden">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ellipse</h3>
+                <div id="groupEllipse" class="control-group space-y-4 hidden">
+                     <h3 class="subsection-heading">Ellipse</h3>
                      <div class="flex items-center space-x-3">
-                        <label for="ellipseRX" class="w-28 text-sm font-medium text-gray-600 shrink-0">Radius X (rx):</label>
-                        <input type="range" id="ellipseRX" min="10" max="145" value="100" class="flex-grow">
-                        <span id="ellipseRXValue" class="text-sm text-gray-500 w-8 text-right font-mono">100</span>
-                    </div>
+                         <label for="ellipseRX" class="w-28 shrink-0">Radius X (rx):</label>
+                         <input type="range" id="ellipseRX" min="10" max="145" value="100">
+                         <span id="ellipseRXValue" class="value-display">100</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="ellipseRY" class="w-28 text-sm font-medium text-gray-600 shrink-0">Radius Y (ry):</label>
-                        <input type="range" id="ellipseRY" min="10" max="145" value="60" class="flex-grow">
-                        <span id="ellipseRYValue" class="text-sm text-gray-500 w-8 text-right font-mono">60</span>
-                    </div>
+                         <label for="ellipseRY" class="w-28 shrink-0">Radius Y (ry):</label>
+                         <input type="range" id="ellipseRY" min="10" max="145" value="60">
+                         <span id="ellipseRYValue" class="value-display">60</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="ellipseCX" class="w-28 text-sm font-medium text-gray-600 shrink-0">Center X (cx):</label>
-                        <input type="range" id="ellipseCX" min="10" max="290" value="150" class="flex-grow">
-                        <span id="ellipseCXValue" class="text-sm text-gray-500 w-8 text-right font-mono">150</span>
-                    </div>
+                         <label for="ellipseCX" class="w-28 shrink-0">Center X (cx):</label>
+                         <input type="range" id="ellipseCX" min="10" max="290" value="150">
+                         <span id="ellipseCXValue" class="value-display">150</span>
+                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="ellipseCY" class="w-28 text-sm font-medium text-gray-600 shrink-0">Center Y (cy):</label>
-                        <input type="range" id="ellipseCY" min="10" max="290" value="150" class="flex-grow">
-                        <span id="ellipseCYValue" class="text-sm text-gray-500 w-8 text-right font-mono">150</span>
-                    </div>
-                </div>
+                         <label for="ellipseCY" class="w-28 shrink-0">Center Y (cy):</label>
+                         <input type="range" id="ellipseCY" min="10" max="290" value="150">
+                         <span id="ellipseCYValue" class="value-display">150</span>
+                     </div>
+                 </div>
 
-                 <div id="groupRectangle" class="control-group space-y-4 border-t pt-4 hidden">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Rectangle</h3>
+                <div id="groupRectangle" class="control-group space-y-4 hidden">
+                     <h3 class="subsection-heading">Rectangle</h3>
                      <div class="flex items-center space-x-3">
-                        <label for="rectWidth" class="w-28 text-sm font-medium text-gray-600 shrink-0">Width:</label>
-                        <input type="range" id="rectWidth" min="10" max="280" value="150" class="flex-grow">
-                        <span id="rectWidthValue" class="text-sm text-gray-500 w-8 text-right font-mono">150</span>
-                    </div>
+                         <label for="rectWidth" class="w-28 shrink-0">Width:</label>
+                         <input type="range" id="rectWidth" min="10" max="280" value="150">
+                         <span id="rectWidthValue" class="value-display">150</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="rectHeight" class="w-28 text-sm font-medium text-gray-600 shrink-0">Height:</label>
-                        <input type="range" id="rectHeight" min="10" max="280" value="100" class="flex-grow">
-                        <span id="rectHeightValue" class="text-sm text-gray-500 w-8 text-right font-mono">100</span>
-                    </div>
+                         <label for="rectHeight" class="w-28 shrink-0">Height:</label>
+                         <input type="range" id="rectHeight" min="10" max="280" value="100">
+                         <span id="rectHeightValue" class="value-display">100</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="rectX" class="w-28 text-sm font-medium text-gray-600 shrink-0">Top-Left X:</label>
-                        <input type="range" id="rectX" min="0" max="290" value="75" class="flex-grow">
-                        <span id="rectXValue" class="text-sm text-gray-500 w-8 text-right font-mono">75</span>
-                    </div>
+                         <label for="rectX" class="w-28 shrink-0">Top-Left X:</label>
+                         <input type="range" id="rectX" min="0" max="290" value="75">
+                         <span id="rectXValue" class="value-display">75</span>
+                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="rectY" class="w-28 text-sm font-medium text-gray-600 shrink-0">Top-Left Y:</label>
-                        <input type="range" id="rectY" min="0" max="290" value="100" class="flex-grow">
-                        <span id="rectYValue" class="text-sm text-gray-500 w-8 text-right font-mono">100</span>
-                    </div>
+                         <label for="rectY" class="w-28 shrink-0">Top-Left Y:</label>
+                         <input type="range" id="rectY" min="0" max="290" value="100">
+                         <span id="rectYValue" class="value-display">100</span>
+                     </div>
                      <div id="rectRXControl" class="control-group flex items-center space-x-3">
-                        <label for="rectRX" class="w-28 text-sm font-medium text-gray-600 shrink-0">Corner RX:</label>
-                        <input type="range" id="rectRX" min="0" max="140" value="10" class="flex-grow">
-                        <span id="rectRXValue" class="text-sm text-gray-500 w-8 text-right font-mono">10</span>
-                    </div>
+                         <label for="rectRX" class="w-28 shrink-0">Corner RX:</label>
+                         <input type="range" id="rectRX" min="0" max="140" value="10">
+                         <span id="rectRXValue" class="value-display">10</span>
+                     </div>
                     <div id="rectRYControl" class="control-group flex items-center space-x-3">
-                        <label for="rectRY" class="w-28 text-sm font-medium text-gray-600 shrink-0">Corner RY:</label>
-                        <input type="range" id="rectRY" min="0" max="140" value="10" class="flex-grow">
-                        <span id="rectRYValue" class="text-sm text-gray-500 w-8 text-right font-mono">10</span>
-                    </div>
-                </div>
+                         <label for="rectRY" class="w-28 shrink-0">Corner RY:</label>
+                         <input type="range" id="rectRY" min="0" max="140" value="10">
+                         <span id="rectRYValue" class="value-display">10</span>
+                     </div>
+                 </div>
 
-                 <div id="groupLine" class="control-group space-y-4 border-t pt-4 hidden">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Line</h3>
+                <div id="groupLine" class="control-group space-y-4 hidden">
+                     <h3 class="subsection-heading">Line</h3>
                     <div class="flex items-center space-x-3">
-                        <label for="lineX1" class="w-28 text-sm font-medium text-gray-600 shrink-0">Start X (x1):</label>
-                        <input type="range" id="lineX1" min="0" max="300" value="50" class="flex-grow">
-                        <span id="lineX1Value" class="text-sm text-gray-500 w-8 text-right font-mono">50</span>
-                    </div>
+                         <label for="lineX1" class="w-28 shrink-0">Start X (x1):</label>
+                         <input type="range" id="lineX1" min="0" max="300" value="50">
+                         <span id="lineX1Value" class="value-display">50</span>
+                     </div>
                      <div class="flex items-center space-x-3">
-                        <label for="lineY1" class="w-28 text-sm font-medium text-gray-600 shrink-0">Start Y (y1):</label>
-                        <input type="range" id="lineY1" min="0" max="300" value="50" class="flex-grow">
-                        <span id="lineY1Value" class="text-sm text-gray-500 w-8 text-right font-mono">50</span>
-                    </div>
+                         <label for="lineY1" class="w-28 shrink-0">Start Y (y1):</label>
+                         <input type="range" id="lineY1" min="0" max="300" value="50">
+                         <span id="lineY1Value" class="value-display">50</span>
+                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="lineX2" class="w-28 text-sm font-medium text-gray-600 shrink-0">End X (x2):</label>
-                        <input type="range" id="lineX2" min="0" max="300" value="250" class="flex-grow">
-                        <span id="lineX2Value" class="text-sm text-gray-500 w-8 text-right font-mono">250</span>
-                    </div>
+                         <label for="lineX2" class="w-28 shrink-0">End X (x2):</label>
+                         <input type="range" id="lineX2" min="0" max="300" value="250">
+                         <span id="lineX2Value" class="value-display">250</span>
+                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="lineY2" class="w-28 text-sm font-medium text-gray-600 shrink-0">End Y (y2):</label>
-                        <input type="range" id="lineY2" min="0" max="300" value="250" class="flex-grow">
-                        <span id="lineY2Value" class="text-sm text-gray-500 w-8 text-right font-mono">250</span>
-                    </div>
-                </div>
+                         <label for="lineY2" class="w-28 shrink-0">End Y (y2):</label>
+                         <input type="range" id="lineY2" min="0" max="300" value="250">
+                         <span id="lineY2Value" class="value-display">250</span>
+                     </div>
+                 </div>
 
-                <div class="space-y-4 border-t pt-4">
-                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Appearance</h3>
+                <div class="space-y-4 border-t-2 border-dashed border-orange-300 pt-4">
+                     <h3 class="subsection-heading">Appearance</h3>
                     <div id="fillControl" class="flex items-center space-x-3">
-                        <label for="fillColor" class="w-28 text-sm font-medium text-gray-600 shrink-0">Fill Color:</label>
-                        <input type="color" id="fillColor" value="#6366f1"> <span id="fillColorValue" class="text-sm text-gray-500 font-mono">#6366F1</span>
+                        <label for="fillColor" class="w-28 shrink-0">Fill Color:</label>
+                        <input type="color" id="fillColor" value="#FF7F50"> <span id="fillColorValue" class="color-value-display">#FF7F50</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="strokeColor" class="w-28 text-sm font-medium text-gray-600 shrink-0">Stroke Color:</label>
-                        <input type="color" id="strokeColor" value="#374151"> <span id="strokeColorValue" class="text-sm text-gray-500 font-mono">#374151</span>
+                        <label for="strokeColor" class="w-28 shrink-0">Stroke Color:</label>
+                        <input type="color" id="strokeColor" value="#4A5568"> <span id="strokeColorValue" class="color-value-display">#4A5568</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <label for="strokeWidth" class="w-28 text-sm font-medium text-gray-600 shrink-0">Stroke Width:</label>
-                        <input type="range" id="strokeWidth" min="0" max="20" value="2" step="0.5" class="flex-grow">
-                        <span id="strokeWidthValue" class="text-sm text-gray-500 w-8 text-right font-mono">2</span>
+                        <label for="strokeWidth" class="w-28 shrink-0">Stroke Width:</label>
+                        <input type="range" id="strokeWidth" min="0" max="20" value="3" step="0.5"> <span id="strokeWidthValue" class="value-display">3</span>
                     </div>
                 </div>
 
             </div>
 
-            <div class="space-y-5">
+            <div class="section-container-alt p-5 space-y-5">
                 <div>
-                    <h2 class="text-lg font-medium text-gray-700 mb-2 text-center">Preview</h2>
-                    <div id="svgPreview" class="rounded-lg p-4">
-                        <p class="text-gray-400 text-sm">Adjust controls to generate shape</p>
+                    <h2 class="section-heading">Preview</h2>
+                    <div id="svgPreview">
+                        <p class="text-amber-700 text-sm font-medium">Adjust controls to see your shape!</p>
                     </div>
                 </div>
 
                 <div>
-                     <h2 class="text-lg font-medium text-gray-700 mb-2 text-center">Generated SVG Code</h2>
+                     <h2 class="section-heading">Generated SVG Code</h2>
                      <div id="svgCodeOutput" class="text-xs sm:text-sm">
                          </div>
-                     <button id="copyBtn" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center space-x-2">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.378h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v.443A9.003 9.003 0 006 8.625a9.003 9.003 0 00-1.5-.781V5.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v1.69" />
+                     <button id="copyBtn">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.378h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876V5.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v.443A9.003 9.003 0 006 8.625a9.003 9.003 0 00-1.5-.781V5.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v1.69" />
                          </svg>
-                         <span>Copy SVG Code</span>
+                         <span>Copy Code</span>
                      </button>
                 </div>
             </div>
@@ -352,7 +536,7 @@
         const lineX2Value = document.getElementById('lineX2Value');
         const lineY2Slider = document.getElementById('lineY2');
         const lineY2Value = document.getElementById('lineY2Value');
-        // Common
+        // Common Appearance
         const fillControl = document.getElementById('fillControl');
         const fillColorInput = document.getElementById('fillColor');
         const fillColorValue = document.getElementById('fillColorValue');
@@ -366,59 +550,72 @@
         const copyBtn = document.getElementById('copyBtn');
         const messageBox = document.getElementById('message-box');
 
-        let messageTimeout; // For message box
+        let messageTimeout; // Timer for message box visibility
 
         // --- Utility Functions ---
+
+        // Shows a temporary message box at the bottom of the screen.
         function showMessage(text, type = 'success') {
-            if (messageTimeout) clearTimeout(messageTimeout);
+            if (messageTimeout) clearTimeout(messageTimeout); // Clear previous timer
             messageBox.textContent = text;
-            messageBox.className = `show ${type}`;
+            // Apply type class first, then trigger show animation
+            messageBox.className = ` ${type}`; // Reset classes except type
+            setTimeout(() => { messageBox.classList.add('show'); }, 10); // Add 'show' after a tick
+
+            // Set timeout to hide the message
             messageTimeout = setTimeout(() => {
-                messageBox.className = messageBox.className.replace('show', '');
+                messageBox.classList.remove('show');
                 messageTimeout = null;
-            }, 3000);
+            }, 3000); // Hide after 3 seconds
         }
 
-        // Function to calculate points for polygon or star (relative to center 0,0)
+        // Calculates the points attribute string for a polygon or star.
+        // Points are calculated relative to a center of (0,0).
         function calculatePolyStarPoints(shapeType, numPoints, outerR, innerR) {
             const points = [];
-            const angleStep = (Math.PI * 2) / numPoints;
+            const angleStep = (Math.PI * 2) / numPoints; // Angle between points
 
             for (let i = 0; i < numPoints; i++) {
-                const angle = i * angleStep - Math.PI / 2; // Start from top
+                const angle = i * angleStep - Math.PI / 2; // Start from the top (-90 degrees)
 
-                // Outer point
+                // Calculate outer point coordinates
                 const x1 = outerR * Math.cos(angle);
                 const y1 = outerR * Math.sin(angle);
                 points.push(`${x1.toFixed(2)},${y1.toFixed(2)}`);
 
-                // Inner point (for star)
+                // If it's a star, calculate and add the inner point
                 if (shapeType === 'star') {
-                    const safeInnerR = Math.max(0, Math.min(innerR, outerR - 1)); // Ensure 0 <= innerR < outerR
-                    const angleInner = angle + angleStep / 2;
+                    // Ensure inner radius is valid (0 <= innerR < outerR)
+                    const safeInnerR = Math.max(0, Math.min(innerR, outerR - 1));
+                    const angleInner = angle + angleStep / 2; // Angle for the inner point (halfway between outer points)
+                    // Calculate inner point coordinates
                     const x2 = safeInnerR * Math.cos(angleInner);
                     const y2 = safeInnerR * Math.sin(angleInner);
                     points.push(`${x2.toFixed(2)},${y2.toFixed(2)}`);
                 }
             }
-            return points.join(' ');
+            return points.join(' '); // Join points into a string for the 'points' attribute
         }
 
         // --- Update Controls Visibility ---
+        // Shows/hides control groups based on the selected shape type.
         function updateControlsVisibility() {
             const shapeType = shapeTypeSelect.value;
 
-            // Hide all groups first
+            // Hide all shape-specific control groups initially
             groupPolyStar.classList.add('hidden');
             groupCircle.classList.add('hidden');
             groupEllipse.classList.add('hidden');
             groupRectangle.classList.add('hidden');
             groupLine.classList.add('hidden');
-            fillControl.classList.remove('hidden'); // Show fill by default
 
-            // Show relevant group
+            // Show fill control by default (will be hidden for line later)
+            fillControl.classList.remove('hidden');
+
+            // Show the relevant control group based on shapeType
             if (shapeType === 'polygon' || shapeType === 'star') {
                 groupPolyStar.classList.remove('hidden');
+                // Show/hide inner radius only for star
                 innerRadiusControl.classList.toggle('hidden', shapeType !== 'star');
             } else if (shapeType === 'circle') {
                 groupCircle.classList.remove('hidden');
@@ -426,47 +623,52 @@
                 groupEllipse.classList.remove('hidden');
             } else if (shapeType === 'rectangle' || shapeType === 'rounded_rectangle') {
                 groupRectangle.classList.remove('hidden');
+                // Show/hide corner radius controls only for rounded rectangle
                 rectRXControl.classList.toggle('hidden', shapeType !== 'rounded_rectangle');
                 rectRYControl.classList.toggle('hidden', shapeType !== 'rounded_rectangle');
             } else if (shapeType === 'line') {
                 groupLine.classList.remove('hidden');
-                fillControl.classList.add('hidden'); // Hide fill for line
+                // Line doesn't have a fill, so hide the fill control
+                fillControl.classList.add('hidden');
             }
         }
 
 
         // --- Main Generation Function ---
+        // Reads control values, generates the SVG element string, and updates the preview and code output.
         function generateAndUpdateSVG() {
             const shapeType = shapeTypeSelect.value;
             const fill = fillColorInput.value;
             const stroke = strokeColorInput.value;
             const strokeWidth = parseFloat(strokeWidthSlider.value);
 
-            // Update common displayed values
+            // Update displayed values for common controls
             fillColorValue.textContent = fill.toUpperCase();
             strokeColorValue.textContent = stroke.toUpperCase();
             strokeWidthValue.textContent = strokeWidth;
 
-            let svgElementString = '';
-            const viewBox = "0 0 300 300"; // Fixed viewBox
+            let svgElementString = ''; // String to hold the generated SVG element (<polygon>, <circle>, etc.)
+            const viewBox = "0 0 300 300"; // Define the SVG coordinate system
 
-            // Generate SVG element based on type
+            // Generate the specific SVG element based on the selected shape type
             switch (shapeType) {
                 case 'polygon':
                 case 'star': {
                     const numPoints = parseInt(pointsSlider.value, 10);
                     const outerR = parseInt(outerRadiusSlider.value, 10);
                     let innerR = parseInt(innerRadiusSlider.value, 10);
+                    // Update displayed values
                     pointsValue.textContent = numPoints;
                     outerRadiusValue.textContent = outerR;
                     innerRadiusValue.textContent = innerR;
+                    // Prevent star inner radius from being >= outer radius
                     if (shapeType === 'star' && innerR >= outerR) {
-                        innerR = Math.max(0, outerR - 5);
-                        innerRadiusSlider.value = innerR;
-                        innerRadiusValue.textContent = innerR;
+                        innerR = Math.max(0, outerR - 5); // Set slightly smaller than outer
+                        innerRadiusSlider.value = innerR; // Update slider value
+                        innerRadiusValue.textContent = innerR; // Update displayed value
                     }
                     const pointsString = calculatePolyStarPoints(shapeType, numPoints, outerR, innerR);
-                    // Center the polygon/star using transform
+                    // Use transform to center the polygon/star in the 300x300 viewBox
                     svgElementString = `<polygon points="${pointsString}" transform="translate(150 150)" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
                     break;
                 }
@@ -474,6 +676,7 @@
                     const r = parseInt(circleRSlider.value, 10);
                     const cx = parseInt(circleCXSlider.value, 10);
                     const cy = parseInt(circleCYSlider.value, 10);
+                    // Update displayed values
                     circleRValue.textContent = r;
                     circleCXValue.textContent = cx;
                     circleCYValue.textContent = cy;
@@ -485,6 +688,7 @@
                     const ry = parseInt(ellipseRYSlider.value, 10);
                     const cx = parseInt(ellipseCXSlider.value, 10);
                     const cy = parseInt(ellipseCYSlider.value, 10);
+                    // Update displayed values
                     ellipseRXValue.textContent = rx;
                     ellipseRYValue.textContent = ry;
                     ellipseCXValue.textContent = cx;
@@ -498,8 +702,10 @@
                     const height = parseInt(rectHeightSlider.value, 10);
                     const x = parseInt(rectXSlider.value, 10);
                     const y = parseInt(rectYSlider.value, 10);
+                    // Get corner radius only if it's a rounded rectangle
                     const rx = (shapeType === 'rounded_rectangle') ? parseInt(rectRXSlider.value, 10) : 0;
                     const ry = (shapeType === 'rounded_rectangle') ? parseInt(rectRYSlider.value, 10) : 0;
+                    // Update displayed values
                     rectWidthValue.textContent = width;
                     rectHeightValue.textContent = height;
                     rectXValue.textContent = x;
@@ -514,54 +720,61 @@
                     const y1 = parseInt(lineY1Slider.value, 10);
                     const x2 = parseInt(lineX2Slider.value, 10);
                     const y2 = parseInt(lineY2Slider.value, 10);
+                    // Update displayed values
                     lineX1Value.textContent = x1;
                     lineY1Value.textContent = y1;
                     lineX2Value.textContent = x2;
                     lineY2Value.textContent = y2;
-                    // Line doesn't use fill, only stroke
+                    // Line doesn't use fill attribute
                     svgElementString = `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
                     break;
                  }
             }
 
-            // Generate final SVG string
+            // Construct the final SVG string with the generated element
             const svgString = `<svg viewBox="${viewBox}" width="300" height="300" xmlns="http://www.w3.org/2000/svg">\n  ${svgElementString}\n</svg>`;
 
-            // Update preview
+            // Update the preview area with the generated SVG
             svgPreview.innerHTML = svgString;
 
-            // Update code output (basic formatting)
+            // Update the code output area
             svgCodeOutput.textContent = svgString;
 
-            // Update visibility of controls AFTER generating
+            // Update visibility of control groups AFTER generating the SVG
             updateControlsVisibility();
         }
 
         // --- Event Listeners ---
+
+        // Regenerate SVG when shape type changes
         shapeTypeSelect.addEventListener('change', generateAndUpdateSVG);
-        // Add listeners for ALL sliders and color inputs
+
+        // Regenerate SVG when any slider or color input changes
         const controls = document.querySelectorAll('input[type="range"], input[type="color"]');
         controls.forEach(control => {
             control.addEventListener('input', generateAndUpdateSVG);
         });
 
-        // Copy Button
+        // Copy Button Functionality
         copyBtn.addEventListener('click', () => {
             const codeToCopy = svgCodeOutput.textContent;
-            if (!codeToCopy || codeToCopy.trim() === '') {
-                showMessage("Nothing to copy.", "error");
+            // Check if there's code to copy
+            if (!codeToCopy || codeToCopy.trim() === '' || codeToCopy.includes('<p>')) { // Added check for placeholder
+                showMessage("No SVG code generated yet!", "error");
                 return;
             }
+            // Use Clipboard API to copy text
             navigator.clipboard.writeText(codeToCopy)
-                .then(() => showMessage("SVG code copied!", "success"))
-                .catch(err => {
+                .then(() => showMessage("SVG code copied! 👍", "success")) // Success message
+                .catch(err => { // Error handling
                     console.error("Failed to copy SVG code: ", err);
-                    showMessage("Failed to copy.", "error");
+                    showMessage("Failed to copy. Try manually!", "error");
                 });
         });
 
         // --- Initial Load ---
-        generateAndUpdateSVG(); // Generate default shape and set initial control visibility
+        // Generate the default shape (Polygon) and set initial control visibility on page load
+        generateAndUpdateSVG();
 
     </script>
 
